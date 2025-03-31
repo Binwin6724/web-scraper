@@ -1,0 +1,8 @@
+streamlit
+crewai
+pydantic
+Pillow
+beautifulsoup4
+python-dotenv
+requests
+watchdog

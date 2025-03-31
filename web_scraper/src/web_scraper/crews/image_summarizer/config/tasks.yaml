@@ -1,0 +1,6 @@
+image_summarization_task:
+  description: >
+    Use the provided {image_path} to summarize the image and provide a concise description.
+  expected_output: >
+    A concise description of the image.
+  agent: image_summarizer

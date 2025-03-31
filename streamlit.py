@@ -1,6 +1,7 @@
 import streamlit as st
-import requests
 import time
+import asyncio
+from web_scraper.src.web_scraper.main import ScraperFlow
 
 st.set_page_config(layout="wide")
 
@@ -11,11 +12,11 @@ def format_time(seconds):
         return f"{minutes} min {remaining_seconds:.2f} sec"
     return f"{remaining_seconds:.2f} sec"
 
-def get_scraper_response(url):
+async def get_scraper_response(url):
     start_time = time.time()
-    response = requests.get(f"http://127.0.0.1:8000/scrape?url={url}")
+    response = await ScraperFlow().kickoff_async(inputs={"url": url, "type": "url"})
     elapsed_time = time.time() - start_time
-    response_json = response.json()
+    response_json = response
     return response_json, elapsed_time
 
 def main():
@@ -28,7 +29,7 @@ def main():
     if st.button("Scrape"):
         with st.spinner("Scraping website and analyzing images..."):
             try:
-                data, elapsed_time = get_scraper_response(url)
+                data, elapsed_time = asyncio.run(get_scraper_response(url))
                 st.info(f"API Response Time: {format_time(elapsed_time)}")
                 
                 # Create two columns
@@ -54,7 +55,7 @@ def main():
                         st.write(f"**Source URL:** [{original_src}]({original_src})")
                         
                         try:
-                            st.image(original_src, caption="Scraped Image", use_column_width=True)
+                            st.image(original_src, caption="Scraped Image", use_container_width=True)
                         except Exception as e:
                             st.error(f"Error loading image: {str(e)}")
                         
